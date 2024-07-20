@@ -33,6 +33,7 @@ export class AuthController {
   }
 
   @UsePipes(new ValidationPipe())
+  @HttpCode(200)
   @Post('reg')
   async reg(@Body() dto: AuthDto, @Res({ passthrough: true }) res: Response) {
     const { refreshToken, ...response } = await this.authService.reg(dto);
@@ -41,16 +42,22 @@ export class AuthController {
     return response;
   }
 
-  @UsePipes(new ValidationPipe())
-  @Post('test')
+  @HttpCode(200)
+  @Post('check')
   @Auth()
   async test(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
     const data = await this.authService.test(req, res);
-    console.log(data);
+
     return data;
   }
 
-  @UsePipes(new ValidationPipe())
+  @HttpCode(200)
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    this.authService.removeRefreshTokenFromResponse(res);
+    return true;
+  }
+
   @HttpCode(200)
   @Get('refresh')
   async refresh(
