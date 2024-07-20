@@ -67,8 +67,7 @@ export class AuthService {
   /** Тут вся логика на валидацию и генерацию токенов пользователей */
 
   async refreshToken(refreshToken: string) {
-    const result = await this.jwt.verifyAsync(refreshToken);
-    if (!result) throw new UnauthorizedException('Invalid refresh token');
+    const result = await this.verifyToken(refreshToken);
 
     const user = await this.userService.getById(result.id);
     if (!user)
@@ -83,7 +82,7 @@ export class AuthService {
 
   private async verifyToken(token: string) {
     try {
-      return await this.jwt.verify(token);
+      return await this.jwt.verifyAsync(token);
     } catch (err) {
       if (err instanceof JsonWebTokenError) {
         throw new UnauthorizedException('Invalid token');
@@ -96,7 +95,6 @@ export class AuthService {
   }
 
   async test(req: Request, res: Response) {
-    console.log(req);
     return {
       msg: 'Hello, world',
     };
@@ -119,7 +117,7 @@ export class AuthService {
   private async validateUser(authDto: AuthDto) {
     const user = await this.userService.getByEmail(authDto.email);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Invalid credentials');
     }
     const isValidPassword = await verify(user.password, authDto.password);
     if (!isValidPassword)
