@@ -1,13 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/services/prisma.service';
-import { CreateNoteDto } from './dto/create-note.dto';
-import { UpdateNoteDto } from './dto/update-note.dto';
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from 'src/services/prisma.service'
+import { CreateNoteDto } from './dto/create-note.dto'
+import { UpdateNoteDto } from './dto/update-note.dto'
 
 @Injectable()
 export class NotesService {
   constructor(private prismaService: PrismaService) {}
-  create(createNoteDto: CreateNoteDto) {
-    // return this.prismaService.notes.create({};
+  create(createNoteDto: CreateNoteDto, userId: string) {
+    return this.prismaService.notes.create({
+      data: {
+        ...createNoteDto,
+        user: {
+          connect: {
+            id: 
+          }
+        }
+      },
+    });
   }
 
   findAll() {

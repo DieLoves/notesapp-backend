@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
+model User {
   id         String     @id @default(cuid())
   created_at DateTime   @default(now())
   updated_at DateTime   @updatedAt
@@ -29,7 +29,7 @@ model Users {
 
 model MailCode {
   id      String  @id @default(cuid())
-  Users   Users?  @relation(fields: [user_id], references: [id])
+  user    User?   @relation(fields: [user_id], references: [id])
   user_id String?
 
   created_at DateTime @default(now())
@@ -41,8 +41,8 @@ model MailCode {
 }
 
 model Notes {
-  id     String  @id @default(cuid())
-  userId String? @unique @map("user_id")
+  id     String @id @default(cuid())
+  userId String @unique @map("user_id")
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -52,14 +52,14 @@ model Notes {
 
   isPrimary Boolean
   isHidden  Boolean
-  Users     Users?  @relation(fields: [userId], references: [id])
+  user      User?   @relation(fields: [userId], references: [id])
 
   @@map("notes")
 }
 
 model Sessions {
   id      String  @id @default(cuid())
-  Users   Users?  @relation(fields: [user_id], references: [id])
+  user    User?   @relation(fields: [user_id], references: [id])
   user_id String?
 
   created_at DateTime @default(now())

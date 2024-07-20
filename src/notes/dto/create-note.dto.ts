@@ -1,4 +1,4 @@
-import { IsString, MinLength } from 'class-validator';
+import { IsBoolean, IsString, MinLength } from 'class-validator'
 
 export class CreateNoteDto {
   @IsString()
@@ -10,6 +10,13 @@ export class CreateNoteDto {
   @IsString()
   @MinLength(5, {
     message: 'Content should be at least 1 character long',
+    always: 
   })
   content: string;
+
+  @IsBoolean()
+  isPrimary: boolean;
+
+  @IsBoolean()
+  isHidden: boolean;
 }
