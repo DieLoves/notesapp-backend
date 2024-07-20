@@ -45,7 +45,7 @@ export class AuthController {
   @HttpCode(200)
   @Post('check')
   @Auth()
-  async test(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
+  async check(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
     const data = await this.authService.test(req, res);
 
     return data;
