@@ -1,37 +1,46 @@
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/services/prisma.service'
-import { CreateNoteDto } from './dto/create-note.dto'
-import { UpdateNoteDto } from './dto/update-note.dto'
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/services/prisma.service';
+import { NoteDto } from './notes.dto';
 
 @Injectable()
 export class NotesService {
   constructor(private prismaService: PrismaService) {}
-  create(createNoteDto: CreateNoteDto, userId: string) {
-    return this.prismaService.notes.create({
+
+  async getAll(userId: string) {
+    return this.prismaService.notes.findMany({
+      where: {
+        userId,
+      },
+    });
+  }
+  async create(dto: NoteDto, userId: string) {
+    return await this.prismaService.notes.create({
       data: {
-        ...createNoteDto,
+        ...dto,
         user: {
           connect: {
-            id: 
-          }
-        }
+            id: userId,
+          },
+        },
       },
     });
   }
 
-  findAll() {
-    return `This action returns all notes`;
+  async update(dto: Partial<NoteDto>, taskId: string, userId: string) {
+    return await this.prismaService.notes.update({
+      where: {
+        id: taskId,
+        userId,
+      },
+      data: dto,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} note`;
-  }
-
-  update(id: number, updateNoteDto: UpdateNoteDto) {
-    return `This action updates a #${id} note`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} note`;
+  async delete(taskId: string) {
+    return await this.prismaService.notes.delete({
+      where: {
+        id: taskId,
+      },
+    });
   }
 }
