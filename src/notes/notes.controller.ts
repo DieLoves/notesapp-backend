@@ -31,7 +31,7 @@ export class NotesController {
   @Get()
   @Auth()
   async getAll(@CurrentUser('id') userId: string) {
-    return this.notesService.getAll(userId);
+    return await this.notesService.getAll(userId);
   }
 
   @UsePipes(new ValidationPipe())
@@ -43,13 +43,13 @@ export class NotesController {
     @CurrentUser('id') userId: string,
     @Param('id') id: string,
   ) {
-    return this.notesService.update(dto, id, userId);
+    return await this.notesService.update(dto, id, userId);
   }
 
   @HttpCode(200)
   @Delete(':id')
   @Auth()
   async delete(@Param('id') id: string) {
-    return this.notesService.delete(id);
+    return await this.notesService.delete(id);
   }
 }
