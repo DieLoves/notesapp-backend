@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Users } from '@prisma/client';
+import { User } from '@prisma/client';
 import { hash } from 'argon2';
 import { AuthDto } from 'src/auth/dto/auth-dto';
 import { PrismaService } from 'src/services/prisma.service';
@@ -9,7 +9,7 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: AuthDto) {
-    return await this.prisma.users.create({
+    return await this.prisma.user.create({
       data: {
         email: dto.email,
         password: await hash(dto.password),
@@ -20,21 +20,21 @@ export class UserService {
   }
 
   async getById(id: string) {
-    return await this.prisma.users.findUnique({
+    return await this.prisma.user.findUnique({
       where: { id },
       include: { sessions: true, notes: true },
     });
   }
 
   async getByEmail(email: string) {
-    return await this.prisma.users.findUnique({
+    return await this.prisma.user.findUnique({
       where: { email },
       include: { sessions: true, notes: true },
     });
   }
 
-  async update(id: string, dto: Partial<Omit<Users, 'id'>>) {
-    return await this.prisma.users.update({
+  async update(id: string, dto: Partial<Omit<User, 'id'>>) {
+    return await this.prisma.user.update({
       where: {
         id,
       },
@@ -44,7 +44,7 @@ export class UserService {
   }
 
   async delete(id: string) {
-    return await this.prisma.users.delete({
+    return await this.prisma.user.delete({
       where: {
         id,
       },
