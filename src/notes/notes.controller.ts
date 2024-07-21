@@ -1,34 +1,54 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
+import { Auth } from 'src/auth/decoration/auth.decorator';
+import { CurrentUser } from 'src/auth/decoration/user.decorator';
+import { NoteDto } from './notes.dto';
 import { NotesService } from './notes.service';
-import { CreateNoteDto } from './dto/create-note.dto';
-import { UpdateNoteDto } from './dto/update-note.dto';
 
 @Controller('notes')
 export class NotesController {
   constructor(private readonly notesService: NotesService) {}
 
   @Post()
-  create(@Body() createNoteDto: CreateNoteDto) {
-    return this.notesService.create(createNoteDto);
+  @HttpCode(200)
+  @UsePipes(new ValidationPipe())
+  @Auth()
+  async create(@Body() dto: NoteDto, @CurrentUser('id') userId: string) {
+    return await this.notesService.create(dto, userId);
   }
 
   @Get()
-  findAll() {
-    return this.notesService.findAll();
+  @Auth()
+  async getAll(@CurrentUser('id') userId: string) {
+    return this.notesService.getAll(userId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notesService.findOne(+id);
+  @UsePipes(new ValidationPipe())
+  @HttpCode(200)
+  @Put(':id')
+  @Auth()
+  async update(
+    @Body() dto: NoteDto,
+    @CurrentUser('id') userId: string,
+    @Param('id') id: string,
+  ) {
+    return this.notesService.update(dto, id, userId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
-    return this.notesService.update(+id, updateNoteDto);
-  }
-
+  @HttpCode(200)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notesService.remove(+id);
+  @Auth()
+  async delete(@Param('id') id: string) {
+    return this.notesService.delete(id);
   }
 }
