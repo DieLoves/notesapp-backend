@@ -7,14 +7,15 @@ export class NotesService {
   constructor(private prismaService: PrismaService) {}
 
   async getAll(userId: string) {
-    return this.prismaService.notes.findMany({
+    return this.prismaService.note.findMany({
       where: {
         userId,
       },
     });
   }
   async create(dto: NoteDto, userId: string) {
-    return await this.prismaService.notes.create({
+    console.log(dto, userId);
+    return await this.prismaService.note.create({
       data: {
         ...dto,
         user: {
@@ -27,7 +28,7 @@ export class NotesService {
   }
 
   async update(dto: Partial<NoteDto>, taskId: string, userId: string) {
-    return await this.prismaService.notes.update({
+    return await this.prismaService.note.update({
       where: {
         id: taskId,
         userId,
@@ -37,7 +38,7 @@ export class NotesService {
   }
 
   async delete(taskId: string) {
-    return await this.prismaService.notes.delete({
+    return await this.prismaService.note.delete({
       where: {
         id: taskId,
       },
