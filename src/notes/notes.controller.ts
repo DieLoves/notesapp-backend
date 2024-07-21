@@ -19,14 +19,15 @@ import { NotesService } from './notes.service';
 export class NotesController {
   constructor(private readonly notesService: NotesService) {}
 
-  @Post()
-  @HttpCode(200)
   @UsePipes(new ValidationPipe())
+  @HttpCode(200)
+  @Post()
   @Auth()
   async create(@Body() dto: NoteDto, @CurrentUser('id') userId: string) {
     return await this.notesService.create(dto, userId);
   }
 
+  @HttpCode(200)
   @Get()
   @Auth()
   async getAll(@CurrentUser('id') userId: string) {
