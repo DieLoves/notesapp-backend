@@ -47,11 +47,11 @@ model Notes {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  title   String
-  content String
+  title   String @default("None")
+  content String @default("None")
 
-  isPrimary Boolean
-  isHidden  Boolean
+  isPrimary Boolean @default(false)
+  isHidden  Boolean @default(false)
   user      User?   @relation(fields: [userId], references: [id])
 
   @@map("notes")
